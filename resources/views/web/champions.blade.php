@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-md-10 offset-md-1">
             <div class="card">
-                <div class="card-header">LIGA DOS CAMPEÕES</div>
+                <div class="card-header"><img class="img-responsive img-rounded" style="max-height: 50px; max-width: 50px;" src="{{$logo}}" alt="{{$name}}">  {{$name}}</div>
 
                 <div class="card-body">
 

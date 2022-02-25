@@ -20,9 +20,9 @@ class APIFootball
     /**
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function run($uri, $type = 'GET')
+    public function run($uri, array $optionalParams = [], $type = 'GET')
     {
-        return json_decode( $this->client->request($type, $uri)->getBody() );
+        return json_decode( $this->client->request($type, $uri, ['query' => $optionalParams])->getBody());
     }
 
 
@@ -50,8 +50,10 @@ class APIFootball
      */
     public function getLeague(int $leagueID): Collection
     {
-        $league = $this->run("v2/leagues/league/{$leagueID}");
-        return collect($league->api);
+        $optionalParams = ['id' => $leagueID , 'current' => 'true'];
+        $league = $this->run("v3/leagues", $optionalParams);
+
+        return collect($league->response[0]);
     }
 
     /**
