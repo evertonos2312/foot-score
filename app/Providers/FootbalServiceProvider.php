@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\APIFootball;
+use App\FootballScore\APIFootball;
 use Illuminate\Support\ServiceProvider;
 use GuzzleHttp\Client;
 

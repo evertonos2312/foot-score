@@ -192,8 +192,8 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Footbal' => ''
-        // ...
+        'Football' => App\FootballScore\APIFootballFacade::class
     ])->toArray(),
+
 
 ];

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\FootballScore;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 
-class APIFootball extends Controller
+class APIFootball
 {
     protected $client;
 
@@ -33,6 +33,7 @@ class APIFootball extends Controller
      * List all available competitions.
      *
      * @return Collection
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLeagues(): Collection
     {
@@ -45,6 +46,7 @@ class APIFootball extends Controller
      *
      * @param integer $leagueID
      * @return Collection
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLeague(int $leagueID): Collection
     {
@@ -57,6 +59,7 @@ class APIFootball extends Controller
      *
      * @param integer $leagueID
      * @return Collection
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function getLeagueStandings(int $leagueID): Collection
     {
