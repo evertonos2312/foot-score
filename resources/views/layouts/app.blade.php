@@ -7,69 +7,85 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>Soccer &mdash; Website by Everton Silva</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-3.3.1.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-migrate-3.0.1.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery-ui.js') }}" defer></script>
+    <script src="{{ asset('js/popper.min.js') }}" defer></script>
+    <script src="{{ asset('js/bootstrap.min.js') }}" defer></script>
+    <script src="{{ asset('js/owl.carousel.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.stellar.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.countdown.min.js') }}" defer></script>
+    <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.easing.1.3.js') }}" defer></script>
+    <script src="{{ asset('js/aos.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.fancybox.min.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.sticky.js') }}" defer></script>
+    <script src="{{ asset('js/jquery.mb.YTPlayer.min.js') }}" defer></script>
+    <script src="{{ asset('js/main.js') }}" defer></script>
+
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('fonts/icomoon/style.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap/bootstrap.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/jquery-ui.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/owl.carousel.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/owl.theme.default.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/jquery.fancybox.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker.css')}}">
+    <link rel="stylesheet" href="{{ asset('fonts/flaticon/font/flaticon.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/aos.css')}}">
+    <link rel="stylesheet" href="{{ asset('css/style.css')}}">
 </head>
 <body>
-<div id="app">
-    <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">
-                {{ config('app.name', 'Laravel') }}
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <!-- Left Side Of Navbar -->
-                <ul class="navbar-nav me-auto">
-
-                </ul>
-
-                <!-- Right Side Of Navbar -->
-                <ul class="navbar-nav ms-auto">
-                    <!-- Authentication Links -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('ligaDosCampeos') }}">{{ __('Liga dos Campeões') }}</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('home') }}">{{ __('Item 2') }}</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                            Nome
-                        </a>
-
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{{ route('home') }}"
-                               onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                {{ __('Logout') }}
-                            </a>
-
-                            <form id="logout-form" action="{{ route('home') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-                        </div>
-                    </li>
-                </ul>
+<div class="site-wrap">
+    <div class="site-mobile-menu site-navbar-target">
+        <div class="site-mobile-menu-header">
+            <div class="site-mobile-menu-close">
+                <span class="icon-close2 js-menu-toggle"></span>
             </div>
         </div>
-    </nav>
-
-    <main class="py-4">
-        @yield('content')
-    </main>
+        <div class="site-mobile-menu-body"></div>
+    </div>
 </div>
+<header class="site-navbar py-4" role="banner">
+    <div class="container">
+        <div class="d-flex align-items-center">
+            <div class="site-logo">
+                <a href="index.html">
+                    <img src="{{ asset('images/logo.png')}}" alt="Logo">
+                </a>
+            </div>
+            <div class="ml-auto">
+                <nav class="site-navigation position-relative text-right" role="navigation">
+                    <ul class="site-menu main-menu js-clone-nav mr-auto d-none d-lg-block">
+                        <li class="active"><a href="{{ route('home') }}" class="nav-link">Ínicio</a></li>
+                        <li class=""><a href="{{ route('ligaInglesa') }}" class="nav-link">Liga Inglesa</a></li>
+                        <li><a href="{{ route('ligaDosCampeos') }}" class="nav-link">Liga dos Campeões</a></li>
+                    </ul>
+                </nav>
+
+                <a href="#" class="d-inline-block d-lg-none site-menu-toggle js-menu-toggle text-black float-right text-white"><span
+                        class="icon-menu h3 text-white"></span></a>
+            </div>
+        </div>
+    </div>
+</header>
+<div class="hero overlay" style="background-image: url('{{ asset("images/bg_3.jpg")}}');">
+    @yield('content')
+</div>
+
+
+
+
 </body>
 </html>

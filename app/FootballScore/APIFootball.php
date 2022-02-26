@@ -63,10 +63,11 @@ class APIFootball
      * @return Collection
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function getLeagueStandings(int $leagueID): Collection
+    public function getLeagueStandings(int $leagueID, int $season): Collection
     {
-        $leagueStandings = $this->run("v2/leagueTable/{$leagueID}");
-        return collect($leagueStandings->api);
+        $params = ['league' => $leagueID, 'season' => $season];
+        $leagueStandings = $this->run("v3/standings", $params);
+        return collect($leagueStandings->response[0]);
     }
 
     /**

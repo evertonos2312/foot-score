@@ -18,3 +18,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/liga-dos-campeos', [TournamentController::class, 'championsLeague'])->name('ligaDosCampeos');
+Route::get('/liga-inglesa', [TournamentController::class, 'premierLeague'])->name('ligaInglesa');
