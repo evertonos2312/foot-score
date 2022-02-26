@@ -51,8 +51,7 @@ class APIFootball
     public function getLeague(int $leagueID): Collection
     {
         $optionalParams = ['id' => $leagueID , 'current' => 'true'];
-        $league = $this->run("v3/leagues", $optionalParams);
-
+        $league = $this->run("leagues", $optionalParams);
         return collect($league->response[0]);
     }
 
@@ -66,7 +65,7 @@ class APIFootball
     public function getLeagueStandings(int $leagueID, int $season): Collection
     {
         $params = ['league' => $leagueID, 'season' => $season];
-        $leagueStandings = $this->run("v3/standings", $params);
+        $leagueStandings = $this->run("standings", $params);
         return collect($leagueStandings->response[0]);
     }
 

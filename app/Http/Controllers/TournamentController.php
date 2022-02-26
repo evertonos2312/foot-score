@@ -14,7 +14,6 @@ class TournamentController extends Controller
     {
         $prepareChampionsLeague =   Football::getLeague(2)->all();
         $basicData = $prepareChampionsLeague['league'];
-
         return view('web.champions', $basicData);
 
     }

@@ -18,10 +18,10 @@ class FootbalServiceProvider extends ServiceProvider
         $this->app->bind('football', function()
         {
             $client = new Client([
-                'base_uri'  =>  'https://api-football-v1.p.rapidapi.com',
+                'base_uri'  =>  'https://v3.football.api-sports.io',
                 'headers'   =>  [
-                    "X-RapidAPI-Host" => "api-football-v1.p.rapidapi.com",
-                    'X-RapidAPI-Key' => getenv('APIFOOTBALL_API_KEY')
+                    'x-rapidapi-host' =>'v3.football.api-sports.io',
+                    'x-apisports-key' => getenv('APIFOOTBALL_API_KEY')
                 ]
             ]);
 
