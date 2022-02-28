@@ -5,6 +5,8 @@ namespace App\FootballScore;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
+use App\Models\LeagueInformation;
+use DateTime;
 
 class APIFootball
 {
@@ -50,9 +52,21 @@ class APIFootball
      */
     public function getLeague(int $leagueID): Collection
     {
+        $leagueInformation = LeagueInformation::where('id', $leagueID)->first();
+        if(!is_null($leagueInformation)){
+            $dateNow =  date_create();
+            $dateOld =  date_create($leagueInformation->updated_at);
+            $dateDiff = date_diff($dateNow, $dateOld);
+
+            if($dateDiff->h < 12) {
+                return collect($leagueInformation);
+            }
+        }
         $optionalParams = ['id' => $leagueID , 'current' => 'true'];
         $league = $this->run("leagues", $optionalParams);
-        return collect($league->response[0]);
+
+        (new LeagueInformation)->storeLeague($league);
+        return collect(LeagueInformation::where('id', $leagueID)->first());
     }
 
     /**
@@ -66,6 +80,10 @@ class APIFootball
     {
         $params = ['league' => $leagueID, 'season' => $season];
         $leagueStandings = $this->run("standings", $params);
+//        echo '<pre>';
+//        print_r($leagueStandings);
+//        echo '</pre>';
+//        die();
         return collect($leagueStandings->response[0]);
     }
 
@@ -75,10 +93,20 @@ class APIFootball
      * @param integer $leagueID
      * @return Collection
      */
-    public function getLeagueMatches(int $leagueID): Collection
+    public function getLeagueFixtures(int $leagueID, int $season, string $round): Collection
     {
-        $leagueMatches = $this->run("v2/fixtures/league/{$leagueID}");
-        return collect($leagueMatches->api);
+        $params = [
+            'league' => $leagueID,
+            'season' => $season,
+            'round' => $round,
+            'timezone' => 'America/Sao_Paulo'
+        ];
+        $leagueFixtures = $this->run("fixtures", $params);
+//        echo '<pre>';
+//        print_r($leagueFixtures);
+//        echo '</pre>';
+//        die();
+        return collect($leagueFixtures->response[0]);
     }
 
 
@@ -91,10 +119,15 @@ class APIFootball
      * @param $date
      * @return Collection
      */
-    public function getMatches($date): Collection
+    public function getCurrentRound(int $leagueID, int $season): Collection
     {
-        $matches = $this->run("v2/fixtures/date/{$date}");
-        return collect($matches->matches);
+        $params = [
+            'league' => $leagueID,
+            'season' => $season,
+            'current' => 'true',
+        ];
+        $rounds = $this->run("fixtures/rounds", $params);
+        return collect($rounds->response[0]);
     }
 
     /**

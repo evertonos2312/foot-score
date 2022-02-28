@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Session;
 
 class HomeController extends Controller
 {
+    public array $data;
     /**
      * Create a new controller instance.
      *
@@ -19,12 +20,13 @@ class HomeController extends Controller
 
     /**
      * Show the application dashboard.
-     *
+     * @param string $exceed
      * @return \Illuminate\Contracts\Support\Renderable
      */
     public function index()
     {
         $msg = Session::get('daily_limit');
-        return view('web.index', ['daily_limit' => $msg]);
+        $this->data['daily_limit'] = $msg;
+        return view('web.index', $this->data);
     }
 }

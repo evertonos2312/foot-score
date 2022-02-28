@@ -32,6 +32,6 @@ class ApiStatusMiddleware
                 }
             }
         }
-        return redirect()->route('home')->with('daily_limit','exceed');
+        return redirect()->route('home')->with('daily_limit','exceeded');
     }
 }

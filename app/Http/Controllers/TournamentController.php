@@ -9,6 +9,7 @@ use \Football;
 
 class TournamentController extends Controller
 {
+    public array $data;
 
     public function championsLeague()
     {
@@ -21,12 +22,17 @@ class TournamentController extends Controller
     public function premierLeague()
     {
         $getCurrentSeason = Football::getLeague(39)->all();
+
         $leagueStandings = [];
         if (!empty($getCurrentSeason)) {
-            $leagueID = $getCurrentSeason['league']->id;
-            $season = $getCurrentSeason['seasons']['0']->year;
+            $leagueID = $getCurrentSeason['id'];
+            $season = $getCurrentSeason['year_current_season'];
+
             $leagueStandings = Football::getLeagueStandings($leagueID, $season)->all()['league']->standings['0'];
+            $leagueCurrentRound = Football::getCurrentRound($leagueID, $season)->all()['0'];
+            $leagueFixtures = Football::getLeagueFixtures($leagueID, $season, $leagueCurrentRound)->all();
         }
-        return view('web.premier', ["standings" => $leagueStandings]);
+        $this->data['standings'] = $leagueStandings;
+        return view('web.premier', $this->data);
     }
 }
