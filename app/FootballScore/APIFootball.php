@@ -2,11 +2,14 @@
 
 namespace App\FootballScore;
 
+use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Support\Collection;
 use App\Models\LeagueInformation;
-use DateTime;
+use Illuminate\Support\Facades\Http;
+use Closure;
 
 class APIFootball
 {
@@ -20,11 +23,41 @@ class APIFootball
 
 
     /**
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * Handle an incoming request.
+     * @return false
+     */
+    private function checkStatus(): bool
+    {
+        $response = Http::withHeaders([
+            'x-apisports-key' => getenv('APIFOOTBALL_API_KEY'),
+        ])->get('https://v3.football.api-sports.io/status');
+        if(!empty($response->body())){
+            $response = json_decode($response->body())->response;
+
+            if(!empty($response)) {
+                if($response->subscription->active){
+                    $current = $response->requests->current;
+                    $limit = $response->requests->limit_day;
+                    if($current < $limit){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+
+
+    /**
+     * @throws GuzzleException
      */
     public function run($uri, array $optionalParams = [], $type = 'GET')
     {
-        return json_decode( $this->client->request($type, $uri, ['query' => $optionalParams])->getBody());
+        if($this->checkStatus()){
+            return json_decode( $this->client->request($type, $uri, ['query' => $optionalParams])->getBody());
+        }
+        return redirect()->route('home')->with('daily_limit', 'exceeded');
     }
 
 
@@ -35,7 +68,7 @@ class APIFootball
      * List all available competitions.
      *
      * @return Collection
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getLeagues(): Collection
     {
@@ -48,7 +81,7 @@ class APIFootball
      *
      * @param integer $leagueID
      * @return Collection
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getLeague(int $leagueID): Collection
     {
@@ -74,16 +107,12 @@ class APIFootball
      *
      * @param integer $leagueID
      * @return Collection
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws GuzzleException
      */
     public function getLeagueStandings(int $leagueID, int $season): Collection
     {
         $params = ['league' => $leagueID, 'season' => $season];
         $leagueStandings = $this->run("standings", $params);
-//        echo '<pre>';
-//        print_r($leagueStandings);
-//        echo '</pre>';
-//        die();
         return collect($leagueStandings->response[0]);
     }
 

@@ -63,6 +63,7 @@
             <div class="site-logo">
                 <a href="index.html">
                     <img src="{{ asset('images/logo.png')}}" alt="Logo">
+                    <img src="{{ asset('storage/03012022001100621d8ec43c7fc39.png')}}" alt="">
                 </a>
             </div>
             <div class="ml-auto">

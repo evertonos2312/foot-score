@@ -22,7 +22,6 @@ class TournamentController extends Controller
     public function premierLeague()
     {
         $getCurrentSeason = Football::getLeague(39)->all();
-
         $leagueStandings = [];
         if (!empty($getCurrentSeason)) {
             $leagueID = $getCurrentSeason['id'];
