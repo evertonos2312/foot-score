@@ -2,6 +2,8 @@
 
 namespace App\FootballScore;
 
+use App\Models\LeagueStandings;
+use App\Models\LeagueStandingsUpdate;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -111,9 +113,25 @@ class APIFootball
      */
     public function getLeagueStandings(int $leagueID, int $season): Collection
     {
+        $leagueStandings = LeagueStandings::where('league_id', $leagueID)->where('season', $season)->get();
+        if($leagueStandings->isNotEmpty()){
+            $lastUpdate = LeagueStandingsUpdate::where('league_id', $leagueID)->first();
+            if(!is_null($lastUpdate)){
+                $dateNow =  date_create();
+                $dateOld =  date_create($lastUpdate->updated_at);
+                $dateDiff = date_diff($dateNow, $dateOld);
+                if($dateDiff->i < 60) {
+                    return $leagueStandings;
+                }
+            }
+        }
+
         $params = ['league' => $leagueID, 'season' => $season];
-        $leagueStandings = $this->run("standings", $params);
-        return collect($leagueStandings->response[0]);
+        $league = $this->run("standings", $params);
+
+        (new LeagueStandings)->storeStanding($league);
+        return LeagueStandings::where('league_id', $leagueID)->where('season', $season)->get();
+
     }
 
     /**

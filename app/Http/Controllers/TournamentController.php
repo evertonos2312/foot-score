@@ -27,9 +27,10 @@ class TournamentController extends Controller
             $leagueID = $getCurrentSeason['id'];
             $season = $getCurrentSeason['year_current_season'];
 
-            $leagueStandings = Football::getLeagueStandings($leagueID, $season)->all()['league']->standings['0'];
-            $leagueCurrentRound = Football::getCurrentRound($leagueID, $season)->all()['0'];
-            $leagueFixtures = Football::getLeagueFixtures($leagueID, $season, $leagueCurrentRound)->all();
+            $leagueStandings = Football::getLeagueStandings($leagueID, $season)->all();
+
+//            $leagueCurrentRound = Football::getCurrentRound($leagueID, $season)->all()['0'];
+//            $leagueFixtures = Football::getLeagueFixtures($leagueID, $season, $leagueCurrentRound)->all();
         }
         $this->data['standings'] = $leagueStandings;
         return view('web.premier', $this->data);

@@ -56,12 +56,12 @@
                         <tr class="text-white">
                             <td>{{$standing->rank}}</td>
                             <td>
-                                <img class="" style="width:24px;height:24px" src="{{$standing->team->logo}}" alt="{{$standing->team->name}}">
-                                <strong class="text-white">{{$standing->team->name}}</strong>
+                                <img class="" style="width:24px;height:24px" src="{{ asset('storage/'.$standing->team_logo)}}" alt="{{$standing->team_name}}">
+                                <strong class="text-white">{{$standing->team_name}}</strong>
                             </td>
-                            <td>{{$standing->all->win}}</td>
-                            <td>{{$standing->all->draw}}</td>
-                            <td>{{$standing->all->lose}}</td>
+                            <td>{{$standing->win}}</td>
+                            <td>{{$standing->draw}}</td>
+                            <td>{{$standing->lose}}</td>
                             <td>{{$standing->points}}</td>
                         </tr>
                         </tbody>
