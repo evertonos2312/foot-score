@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('season_start');
             $table->date('season_end');
             $table->boolean('current');
+            $table->string('current_round');
             $table->timestamps();
         });
     }

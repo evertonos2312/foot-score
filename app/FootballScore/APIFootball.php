@@ -93,7 +93,7 @@ class APIFootball
             $dateOld =  date_create($leagueInformation->updated_at);
             $dateDiff = date_diff($dateNow, $dateOld);
 
-            if($dateDiff->h < 12) {
+            if($dateDiff->d < 7) {
                 return collect($leagueInformation);
             }
         }
@@ -131,7 +131,17 @@ class APIFootball
 
         (new LeagueStandings)->storeStanding($league);
         return LeagueStandings::where('league_id', $leagueID)->where('season', $season)->get();
+    }
 
+    public function updateTeamLogo(int $leagueID, int $season):void
+    {
+        $leagueStandings = LeagueStandings::select('team_logo')->where('league_id', $leagueID)->whereNull('team_logo')->where('season', $season)->get();
+        if($leagueStandings->isNotEmpty()){
+            $params = ['league' => $leagueID, 'season' => $season];
+            $league = $this->run("standings", $params);
+            $leagueStandingsModel = new LeagueStandings();
+            $leagueStandingsModel->storeTeamsLogo($league);
+        }
     }
 
     /**
@@ -168,13 +178,29 @@ class APIFootball
      */
     public function getCurrentRound(int $leagueID, int $season): Collection
     {
+        $leagueInfo = LeagueInformation::select('current_round', 'updated_at')->where('id', $leagueID)->first();
+
+        if(!is_null($leagueInfo) && !empty($leagueInfo['current_round'])){
+            $dateNow =  date_create();
+            $dateOld =  date_create($leagueInfo->updated_at);
+            $dateDiff = date_diff($dateNow, $dateOld);
+
+            if($dateDiff->d < 1) {
+                return collect($leagueInfo['current_round']);
+            }
+        }
         $params = [
             'league' => $leagueID,
             'season' => $season,
             'current' => 'true',
         ];
         $rounds = $this->run("fixtures/rounds", $params);
-        return collect($rounds->response[0]);
+
+        $LeagueInformationModel = LeagueInformation::find($leagueID);
+        $LeagueInformationModel->current_round = $rounds->response[0];
+        $LeagueInformationModel->save();
+
+        return LeagueInformation::select('current_round')->where('id', $leagueID)->where('season', $season)->get();
     }
 
     /**

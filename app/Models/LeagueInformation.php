@@ -20,6 +20,7 @@ class LeagueInformation extends Model
         'season_start',
         'season_end',
         'current',
+        'current_round'
     ];
 
     public function storeLeague(object $data)

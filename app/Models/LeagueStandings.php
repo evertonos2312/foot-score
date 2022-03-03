@@ -11,6 +11,7 @@ class LeagueStandings extends Model
     use HasFactory;
 
     protected $fillable = [
+        'id',
         'league_id',
         'season',
         'rank',
@@ -26,38 +27,55 @@ class LeagueStandings extends Model
         'lose',
         'goals_for',
         'goals_against',
+        'points_percent'
     ];
 
     public function storeStanding(object $data)
     {
+        foreach ($data->response[0]->league->standings['0'] as $standing){
+            $pointsPossible = $standing->all->played * 3;
+            $pointsPercent = ($standing->points /$pointsPossible) * 100;
+            LeagueStandings::updateOrCreate(
+                [
+                    'team_id' => $standing->team->id,
+                ],
+                [
+                'league_id' => $data->response[0]->league->id,
+                'season' =>  $data->response[0]->league->season,
+                'rank' => $standing->rank,
+                'team_name' => $standing->team->name,
+                'points' => $standing->points,
+                'goalsDiff' => $standing->goalsDiff,
+                'form' => $standing->form,
+                'played' => $standing->all->played,
+                'win' => $standing->all->win,
+                'draw' => $standing->all->draw,
+                'lose' => $standing->all->lose,
+                'goals_for' => $standing->all->goals->for,
+                'goals_against' => $standing->all->goals->against,
+                'points_percent' => $pointsPercent
+            ]);
+        }
+        LeagueStandingsUpdate::updateOrCreate([
+            'league_id' => $data->response[0]->league->id
+        ]);
+    }
+
+    public function storeTeamsLogo(object $data)
+    {
         $lastUpdate = LeagueStandingsUpdate::where('league_id', $data->response[0]->league->id)->first();
         $updateLogo = true;
+
         if(!is_null($lastUpdate)){
             $dateNow =  date_create();
             $dateOld =  date_create($lastUpdate->updated_at);
             $dateDiff = date_diff($dateNow, $dateOld);
-
-            if($dateDiff->d < 120 ) {
-                $updateLogo = false;
+            if($dateDiff->d > 120 ) {
+                $updateLogo = true;
             }
 
         }
         foreach ($data->response[0]->league->standings['0'] as $standing){
-            $model = new LeagueStandings();
-            $model->league_id = $data->response[0]->league->id;
-            $model->season = $data->response[0]->league->season;
-            $model->rank = $standing->rank;
-            $model->team_id = $standing->team->id;
-            $model->team_name = $standing->team->name;
-            $model->points = $standing->points;
-            $model->goalsDiff = $standing->goalsDiff;
-            $model->form = $standing->form;
-            $model->played = $standing->all->played;
-            $model->win = $standing->all->win;
-            $model->draw = $standing->all->draw;
-            $model->lose = $standing->all->lose;
-            $model->goals_for = $standing->all->goals->for;
-            $model->goals_against = $standing->all->goals->against;
             if($updateLogo) {
                 $path = $standing->team->logo;
                 $logo = file_get_contents($path);
@@ -65,12 +83,10 @@ class LeagueStandings extends Model
                 $extension = image_type_to_extension($size[2]);
                 $logoUniqueName = date('mdYHis').uniqid().$standing->team->id.$extension;
                 Storage::disk('public')->put($logoUniqueName, $logo);
-                $model->team_logo = $logoUniqueName;
+                $updateLogoModel = LeagueStandings::where('team_id',$standing->team->id)->first();
+                $updateLogoModel->team_logo = $logoUniqueName;
+                $updateLogoModel->save();
             }
-            $model->save();
         }
-        $updateStandings = new LeagueStandingsUpdate();
-        $updateStandings->league_id = $data->response[0]->league->id;
-        $updateStandings->save();
     }
 }

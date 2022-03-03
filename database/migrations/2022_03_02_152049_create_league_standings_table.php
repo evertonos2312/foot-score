@@ -18,9 +18,9 @@ return new class extends Migration
             $table->integer('league_id');
             $table->string('season');
             $table->integer('rank');
-            $table->integer('team_id');
+            $table->integer('team_id')->unique();
             $table->string('team_name');
-            $table->string('team_logo');
+            $table->string('team_logo')->nullable();
             $table->integer('points');
             $table->integer('goalsDiff');
             $table->string('form');
@@ -30,6 +30,7 @@ return new class extends Migration
             $table->integer('lose');
             $table->integer('goals_for');
             $table->integer('goals_against');
+            $table->decimal('points_percent', 3, 1);
             $table->timestamps();
         });
     }
