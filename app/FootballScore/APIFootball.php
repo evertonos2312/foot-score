@@ -133,15 +133,25 @@ class APIFootball
         return LeagueStandings::where('league_id', $leagueID)->where('season', $season)->get();
     }
 
-    public function updateTeamLogo(int $leagueID, int $season):void
+    public function updateTeamLogo(int $leagueID, int $season): \Illuminate\Http\JsonResponse
     {
         $leagueStandings = LeagueStandings::select('team_logo')->where('league_id', $leagueID)->whereNull('team_logo')->where('season', $season)->get();
-        if($leagueStandings->isNotEmpty()){
-            $params = ['league' => $leagueID, 'season' => $season];
-            $league = $this->run("standings", $params);
-            $leagueStandingsModel = new LeagueStandings();
-            $leagueStandingsModel->storeTeamsLogo($league);
+        $lastUpdate = LeagueStandingsUpdate::where('league_id', $leagueID)->first();
+
+        if(!is_null($lastUpdate)){
+            $dateNow =  date_create();
+            $dateOld =  date_create($lastUpdate->updated_at);
+            $dateDiff = date_diff($dateNow, $dateOld);
+            if($dateDiff->d > 120 || $leagueStandings->isNotEmpty()) {
+                $params = ['league' => $leagueID, 'season' => $season];
+                $league = $this->run("standings", $params);
+                $leagueStandingsModel = new LeagueStandings();
+                $leagueStandingsModel->storeTeamsLogo($league);
+                return response()->json(['message' => "Teams logos from league $leagueID updated"]);
+            }
         }
+        return response()->json(['message' => "No updates found for league $leagueID"]);
+
     }
 
     /**

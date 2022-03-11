@@ -63,30 +63,20 @@ class LeagueStandings extends Model
 
     public function storeTeamsLogo(object $data)
     {
-        $lastUpdate = LeagueStandingsUpdate::where('league_id', $data->response[0]->league->id)->first();
-        $updateLogo = true;
-
-        if(!is_null($lastUpdate)){
-            $dateNow =  date_create();
-            $dateOld =  date_create($lastUpdate->updated_at);
-            $dateDiff = date_diff($dateNow, $dateOld);
-            if($dateDiff->d > 120 ) {
-                $updateLogo = true;
-            }
-
-        }
         foreach ($data->response[0]->league->standings['0'] as $standing){
-            if($updateLogo) {
-                $path = $standing->team->logo;
-                $logo = file_get_contents($path);
-                $size = getimagesize($path);
-                $extension = image_type_to_extension($size[2]);
-                $logoUniqueName = date('mdYHis').uniqid().$standing->team->id.$extension;
-                Storage::disk('public')->put($logoUniqueName, $logo);
-                $updateLogoModel = LeagueStandings::where('team_id',$standing->team->id)->first();
-                $updateLogoModel->team_logo = $logoUniqueName;
-                $updateLogoModel->save();
-            }
+            $path = $standing->team->logo;
+            $logo = file_get_contents($path);
+            $size = getimagesize($path);
+            $extension = image_type_to_extension($size[2]);
+            $logoUniqueName = date('mdYHis').uniqid().$standing->team->id.$extension;
+            Storage::disk('public')->put($logoUniqueName, $logo);
+
+            $updateLogoModel = LeagueStandings::where('team_id',$standing->team->id)->first();
+            $updateLogoModel->team_logo = $logoUniqueName;
+            $updateLogoModel->save();
         }
+        LeagueStandingsUpdate::updateOrCreate([
+            'league_id' => $data->response[0]->league->id
+        ]);
     }
 }

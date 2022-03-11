@@ -28,9 +28,6 @@ class TournamentController extends Controller
             $season = $getCurrentSeason['year_current_season'];
 
             $leagueStandings = Football::getLeagueStandings($leagueID, $season)->all();
-            Football::updateTeamLogo($leagueID, $season);
-
-
             $leagueCurrentRound = Football::getCurrentRound($leagueID, $season)->all()[0];
 //            $leagueFixtures = Football::getLeagueFixtures($leagueID, $season, $leagueCurrentRound)->all();
         }
